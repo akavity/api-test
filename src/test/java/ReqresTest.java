@@ -1,5 +1,6 @@
 import io.restassured.http.ContentType;
 import org.example.models.UserData;
+import org.example.specificatons.Specifications;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -13,10 +14,11 @@ public class ReqresTest {
 
     @Test
     public void checkId() {
+        Specifications.installSpecification(Specifications.requestSpecification(URl),Specifications.responseSpecification(200));
         List<UserData> usersList = given()
                 .when()
-                .contentType(ContentType.JSON)
-                .get(URl + "api/users?page=2")
+            //    .contentType(ContentType.JSON)
+                .get("api/users?page=2")
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
 
