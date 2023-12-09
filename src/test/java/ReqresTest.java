@@ -1,4 +1,7 @@
 import io.restassured.http.ContentType;
+import org.example.models.Registration;
+import org.example.models.SuccessRegistration;
+import org.example.models.UnSuccessReg;
 import org.example.models.UserData;
 import org.example.specificatons.Specifications;
 import org.testng.Assert;
@@ -14,10 +17,10 @@ public class ReqresTest {
 
     @Test
     public void checkId() {
-        Specifications.installSpecification(Specifications.requestSpecification(URl),Specifications.responseSpecification(200));
+        Specifications.installSpecification(Specifications.requestSpecification(URl), Specifications.responseSpecification(200));
         List<UserData> usersList = given()
                 .when()
-            //    .contentType(ContentType.JSON)
+                //    .contentType(ContentType.JSON)      use specifications
                 .get("api/users?page=2")
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
@@ -53,5 +56,34 @@ public class ReqresTest {
         for (int i = 0; i < avatars.size(); i++) {
             Assert.assertTrue(avatars.get(i).contains(ids.get(i)));
         }
+    }
+
+    @Test
+    public void successRegistration() {
+        Specifications.installSpecification(Specifications.requestSpecification(URl), Specifications.responseSpecification(200));
+        Integer id = 4;
+        String token = "QpwL5tke4Pnpja7X4";
+        Registration user = new Registration("eve.holt@reqres.in", "pistol");
+        SuccessRegistration successReg = given()
+                .body(user)
+                .when()
+                .post("api/register")
+                .then().log().all()
+                .extract().as(SuccessRegistration.class);
+        Assert.assertEquals(token, successReg.getToken());
+        Assert.assertEquals(id, successReg.getId());
+    }
+
+    @Test
+    public void unSuccessRegistration() {
+        Specifications.installSpecification(Specifications.requestSpecification(URl), Specifications.responseSpecification(400));
+        Registration user = new Registration("eve.holt@reqres.in", "");
+        UnSuccessReg unSuccessReg = given()
+                .body(user)
+                .when()
+                .post("api/register")
+                .then().log().all()
+                .extract().as(UnSuccessReg.class);
+        Assert.assertEquals("Missing password", unSuccessReg.getError());
     }
 }
