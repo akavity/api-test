@@ -8,10 +8,13 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
 public class Specifications {
+    public Specifications(String url, int statusCode) {
+        installSpecification(requestSpecification(url), responseSpecification(statusCode));
+    }
     public static RequestSpecification requestSpecification(String url) {
         return new RequestSpecBuilder()
                 .setBaseUri(url)
-                .setContentType(ContentType.JSON)
+                .setContentType(ContentType.JSON)  //.setContentType("application/json")
                 .build();
     }
 

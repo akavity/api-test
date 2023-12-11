@@ -1,4 +1,3 @@
-import io.restassured.http.ContentType;
 import org.example.models.Registration;
 import org.example.models.SuccessRegistration;
 import org.example.models.UnSuccessReg;
@@ -14,13 +13,13 @@ import static io.restassured.RestAssured.given;
 
 public class ReqresTest {
     private static final String URl = "https://reqres.in/";
+    Specifications specifications;
 
     @Test
     public void checkId() {
-        Specifications.installSpecification(Specifications.requestSpecification(URl), Specifications.responseSpecification(200));
+        specifications = new Specifications(URl, 200);
         List<UserData> usersList = given()
                 .when()
-                //    .contentType(ContentType.JSON)      use specifications
                 .get("api/users?page=2")
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
@@ -30,29 +29,29 @@ public class ReqresTest {
 
     @Test
     public void checkAvatars() {
+        specifications = new Specifications(URl, 200);
         List<UserData> userList = given()
                 .when()
-                .contentType(ContentType.JSON)
-                .get(URl + "api/users?page=2")
+                .get("api/users?page=2")
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
 
         Assert.assertTrue(userList.stream().allMatch(x -> x.getEmail().endsWith("@reqres.in")));
-
         userList.stream().forEach(x -> Assert.assertTrue(x.getEmail().endsWith("@reqres.in")));
     }
 
     @Test
     public void checkAvatarContainId() {
+        specifications = new Specifications(URl, 200);
         List<UserData> userList = given()
                 .when()
-                .contentType(ContentType.JSON)
-                .get(URl + "api/users?page=2")
+                .get("api/users?page=2")
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
 
         List<String> avatars = userList.stream().map(UserData::getAvatar).collect(Collectors.toList());
         List<String> ids = userList.stream().map(x -> x.getId().toString()).collect(Collectors.toList());
+
         for (int i = 0; i < avatars.size(); i++) {
             Assert.assertTrue(avatars.get(i).contains(ids.get(i)));
         }
@@ -60,7 +59,7 @@ public class ReqresTest {
 
     @Test
     public void successRegistration() {
-        Specifications.installSpecification(Specifications.requestSpecification(URl), Specifications.responseSpecification(200));
+        specifications = new Specifications(URl, 200);
         Integer id = 4;
         String token = "QpwL5tke4Pnpja7X4";
         Registration user = new Registration("eve.holt@reqres.in", "pistol");
@@ -70,13 +69,14 @@ public class ReqresTest {
                 .post("api/register")
                 .then().log().all()
                 .extract().as(SuccessRegistration.class);
+
         Assert.assertEquals(token, successReg.getToken());
         Assert.assertEquals(id, successReg.getId());
     }
 
     @Test
     public void unSuccessRegistration() {
-        Specifications.installSpecification(Specifications.requestSpecification(URl), Specifications.responseSpecification(400));
+        specifications = new Specifications(URl, 400);
         Registration user = new Registration("eve.holt@reqres.in", "");
         UnSuccessReg unSuccessReg = given()
                 .body(user)
@@ -85,5 +85,14 @@ public class ReqresTest {
                 .then().log().all()
                 .extract().as(UnSuccessReg.class);
         Assert.assertEquals("Missing password", unSuccessReg.getError());
+    }
+
+    @Test
+    public void deleteUser() {
+        specifications = new Specifications(URl, 204);
+        given()
+                .when()
+                .delete("api/users/2")
+                .then().log().all();
     }
 }
