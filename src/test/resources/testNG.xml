@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="MainTest">
+    <test name="MainTest" parallel="false">
+        <classes>
+            <class name="org.example.ReqresTest">
+                <methods>
+                    <include name="checkId"/>
+                    <include name="checkAvatars"/>
+                    <include name="checkAvatarContainId"/>
+                    <include name="successRegistration"/>
+                    <include name="unSuccessRegistration"/>
+                    <include name="deleteUser"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

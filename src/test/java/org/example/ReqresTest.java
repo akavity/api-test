@@ -1,3 +1,5 @@
+package org.example;
+
 import org.example.models.Registration;
 import org.example.models.SuccessRegistration;
 import org.example.models.UnSuccessReg;
@@ -7,17 +9,19 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
 public class ReqresTest {
-    private static final String URl = "https://reqres.in/";
+    private final ResourceBundle bundle = ResourceBundle.getBundle("config");
+    private final String URL = bundle.getString("URL");
     Specifications specifications;
 
     @Test
     public void checkId() {
-        specifications = new Specifications(URl, 200);
+        specifications = new Specifications(URL, 200);
         List<UserData> usersList = given()
                 .when()
                 .get("api/users?page=2")
@@ -29,7 +33,7 @@ public class ReqresTest {
 
     @Test
     public void checkAvatars() {
-        specifications = new Specifications(URl, 200);
+        specifications = new Specifications(URL, 200);
         List<UserData> userList = given()
                 .when()
                 .get("api/users?page=2")
@@ -42,7 +46,7 @@ public class ReqresTest {
 
     @Test
     public void checkAvatarContainId() {
-        specifications = new Specifications(URl, 200);
+        specifications = new Specifications(URL, 200);
         List<UserData> userList = given()
                 .when()
                 .get("api/users?page=2")
@@ -59,7 +63,7 @@ public class ReqresTest {
 
     @Test
     public void successRegistration() {
-        specifications = new Specifications(URl, 200);
+        specifications = new Specifications(URL, 200);
         Integer id = 4;
         String token = "QpwL5tke4Pnpja7X4";
         Registration user = new Registration("eve.holt@reqres.in", "pistol");
@@ -76,7 +80,7 @@ public class ReqresTest {
 
     @Test
     public void unSuccessRegistration() {
-        specifications = new Specifications(URl, 400);
+        specifications = new Specifications(URL, 400);
         Registration user = new Registration("eve.holt@reqres.in", "");
         UnSuccessReg unSuccessReg = given()
                 .body(user)
@@ -89,7 +93,7 @@ public class ReqresTest {
 
     @Test
     public void deleteUser() {
-        specifications = new Specifications(URl, 204);
+        specifications = new Specifications(URL, 204);
         given()
                 .when()
                 .delete("api/users/2")
