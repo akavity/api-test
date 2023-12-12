@@ -2,7 +2,7 @@
 <suite name="MainTest">
     <test name="MainTest" parallel="false">
         <classes>
-            <class name="org.example.ReqresTest">
+            <class name="org.example.ReqresPojoTest">
                 <methods>
                     <include name="checkId"/>
                     <include name="checkAvatars"/>
@@ -10,6 +10,14 @@
                     <include name="successRegistration"/>
                     <include name="unSuccessRegistration"/>
                     <include name="deleteUser"/>
+                </methods>
+            </class>
+            <class name="org.example.ReqrestNoPojoTest">
+                <methods>
+                    <include name="checkAvatarsContainsIdNoPojo"/>
+                    <include name="checkEmailsContainsDogsNoPojo"/>
+                    <include name="successRegNoPojoNoResponse"/>
+                    <include name="successRegNoPojoNo"/>
                 </methods>
             </class>
         </classes>

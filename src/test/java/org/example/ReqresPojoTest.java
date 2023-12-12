@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
-public class ReqresTest {
+public class ReqresPojoTest {
     private final ResourceBundle bundle = ResourceBundle.getBundle("config");
     private final String URL = bundle.getString("URL");
     Specifications specifications;
