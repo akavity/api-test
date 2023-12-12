@@ -92,5 +92,35 @@ public class ReqrestNoPojoTest {
         Assert.assertEquals(id, 4);
         Assert.assertEquals(token, "QpwL5tke4Pnpja7X4");
     }
-}
 
+    @Test
+    public void failureRegNoPojoNoResponse() {
+        specifications = new Specifications(URL, 400);
+        Map<String, String> user = new HashMap<>();
+        user.put("email", "sydney@fife");
+        given()
+                .body(user)
+                .when()
+                .post("api/register")
+                .then().log().all()
+                .body("error", Matchers.equalTo("Missing password"));
+    }
+
+    @Test
+    public void failureRegNoPojo() {
+        specifications = new Specifications(URL, 400);
+        Map<String, String> user = new HashMap<>();
+        user.put("email", "sydney@fife");
+        Response response = given()
+                .body(user)
+                .when()
+                .post("api/register")
+                .then().log().all()
+                .extract().response();
+
+        JsonPath jsonPath = response.jsonPath();
+        String error = jsonPath.get("error");
+
+        Assert.assertEquals(error, "Missing password");
+    }
+}

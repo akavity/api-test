@@ -18,6 +18,8 @@
                     <include name="checkEmailsContainsDogsNoPojo"/>
                     <include name="successRegNoPojoNoResponse"/>
                     <include name="successRegNoPojoNo"/>
+                    <include name="failureRegNoPojoNoResponse"/>
+                    <include name="failureRegNoPojo"/>
                 </methods>
             </class>
         </classes>
